@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<!-- MAIN / CARDS -->
+<div class="container">
+  <h5 class="pb-2"><strong>Menù di oggi</strong></h5>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Primi</h5>
+          <ul class="list-group">
+            {% for piatto in piatti %}
+            {% if piatto.categoria == 1 %}
+            <li class="list-group-item"><a href="{{ url_for('piatto_singolo', id_piatto=piatto.id) }}" class="card-link">{{ piatto.nome_piatto }}</a> {% if piatto.sconto %} <span class="badge rounded-pill text-bg-success">Sconto</span>{% endif %}</li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Secondi</h5>
+          <ul class="list-group">
+            {% for piatto in piatti %}
+            {% if piatto.categoria == 2 %}
+            <li class="list-group-item"><a href="{{ url_for('piatto_singolo', id_piatto=piatto.id) }}" class="card-link">{{ piatto.nome_piatto }}</a></a> {% if piatto.sconto %} <span class="badge rounded-pill text-bg-success">Sconto</span>{% endif %}</li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card mb-3">
+        <div class="card-body">
+          <h5 class="card-title">Contorni</h5>
+          <ul class="list-group">
+            {% for piatto in piatti %}
+            {% if piatto.categoria == 3 %}
+            <li class="list-group-item"><a href="{{ url_for('piatto_singolo', id_piatto=piatto.id) }}" class="card-link">{{ piatto.nome_piatto }}</a></a> {% if piatto.sconto %} <span class="badge rounded-pill text-bg-success">Sconto</span>{% endif %}</li>
+            {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+
+{% if current_user.is_authenticated %}
+<div class="container">
+  <h4>Benvenuto, <em>{{ current_user.nome }}.</em></h4>
+</div>
+{% else %}
+<div class="container">
+            <!-- LOGIN-->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#login">
+            Login
+            </button>
+        
+            <!-- Modal -->
+            <div class="modal fade" id="login" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Inserisci qui il tuo form -->
+                    <form action="/login" method="POST">
+                    <!-- Aggiungi i campi del tuo form qui -->
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="emailInput" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordInput" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="passwordInput" name="password" required>
+                    </div>
+                    <!-- Aggiungi altri campi del form, se necessario -->     
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        <button type="submit" class="btn btn-primary">Accedi</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- REGISTRATI -->
+            <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#creaNuovoAccount">
+            Crea nuovo account
+            </button>
+        
+            <!-- Modal -->
+            <div class="modal fade" id="creaNuovoAccount" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Inserisci qui il tuo form -->
+                    <form action="/iscriviti" method="POST" enctype="multipart/form-data">
+                    <!-- Aggiungi i campi del tuo form qui -->
+                    <div class="mb-3">
+                        <label for="nomeInput" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="nomeInput" name="nome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cognomeInput" class="form-label">Cognome</label>
+                        <input type="text" class="form-control" id="cognomeInput" name="cognome" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="usernameInput" class="form-label">Username</label>
+                        <input type="text" class="form-control" id="usernameInput" name="username" minlength="2" maxlength="100" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="matricolaInput" class="form-label">Matricola</label>
+                        <input type="text" class="form-control" id="matricolaInput" name="matricola" minlength="7" maxlength="7" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="emailInput" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="emailInput" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="passwordInput" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="passwordInput" name="password" required>
+                    </div>
+                    <!-- Aggiungi altri campi del form, se necessario -->     
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+                        <button type="submit" class="btn btn-success">Iscriviti</button>
+                    </div>
+                    </form>
+                </div>
+                </div>
+            </div>
+            </div>
+</div>
+{% endif %}
+    
+  <!-- FINE MAIN / CARDS -->
+
+
+{% endblock %}

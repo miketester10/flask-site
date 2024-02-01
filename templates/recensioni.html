@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Le mie recensioni{% endblock %}
+{% block content %}
+
+<div class="container">
+    <h4>Le mie <strong>recensioni</strong></h4>
+    {% if not recensioni %}
+    <h6><em>Non hai ancora scritto una recensione!</em></h6>
+    {% else %}
+    <div class="row">
+        <section>
+            <h5>Filter by:</h5>
+            <a href="#" data-categoriapiatto="Tutte">Tutte le recensioni</a>
+            <a href="#" data-categoriapiatto="Primi">Primi</a>
+            <a href="#" data-categoriapiatto="Secondi">Secondi</a>
+            <a href="#" data-categoriapiatto="Contorni">Contorni</a>
+        </section>
+        {% for recensione in recensioni %}
+        {% if recensione.id_utente == current_user.id %}
+        <div class="col-md-3 pt-4 card-recensione">
+            <div class="card mb-3">
+                <span class="visually-hidden">
+                        {% if recensione.id_piatto == 1 or recensione.id_piatto == 2 %}Primi{% elif recensione.id_piatto == 3 or recensione.id_piatto == 4 %}Secondi{% elif recensione.id_piatto == 5 or recensione.id_piatto == 6 %}Contorni{% endif %}
+                </span>
+                {% if recensione['file'] %}
+                <a href="{{ url_for('piatto_singolo', id_piatto=recensione.id_piatto) }}">
+                    <img src="{{ url_for('static', filename=recensione.file) }}" class="card-img-top" alt="recensione">
+                </a>
+                {% endif %}
+                <div class="card-body">
+                    <p class="card-text">{{ recensione.recensione }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><em>{{ recensione.data }}</em></li>
+                </ul>
+                <form method="post" action="{{ url_for('elimina_recensione', recensione_id=recensione.id) }}">
+                    <button type="submit" class="btn btn-outline-danger">Elimina</button>
+                </form>
+        {% endif %}
+            </div>
+        </div>
+        {% endfor %} 
+    </div>
+    {% endif %}       
+</div>
+
+{% endblock %}
