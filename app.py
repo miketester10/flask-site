@@ -211,7 +211,6 @@ def load_user(user_id):
   try:
     user = User(db_user['id'], db_user['nome'], db_user['cognome'], db_user['username'], db_user['matricola'], db_user['email'], db_user['password'])
   except:
-    flash('Account eliminato definitivamente!', 'danger')
     return redirect(url_for('login'))
   
   return user 
@@ -224,3 +223,17 @@ def logout():
     print('Logout effettuato') # questo messaggio lo stampa nel terminale per noi sviluppatori (lato server)
     flash('Logout effettuato, a presto!', 'success') # questo messaggio viene visualizzato sul browser (lato client, quindi frontend)
     return redirect(url_for('index'))
+
+# creo root /elimina_account (e relative recensioni associate a quell'account)
+@app.route("/elimina_account")
+@login_required
+def elimina_account():
+    
+    success = utenti_dao.elimina_account(current_user.id)
+
+    if success:
+        flash('Account eliminato correttamente!', 'success')
+        return redirect(url_for('index'))
+    else:
+        flash('Errore durante l\'eliminazione dell\'account. Riprova!', 'danger')
+      
