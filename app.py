@@ -211,7 +211,7 @@ def load_user(user_id):
   try:
     user = User(db_user['id'], db_user['nome'], db_user['cognome'], db_user['username'], db_user['matricola'], db_user['email'], db_user['password'])
   except:
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
   
   return user 
 
@@ -236,4 +236,5 @@ def elimina_account():
         return redirect(url_for('index'))
     else:
         flash('Errore durante l\'eliminazione dell\'account. Riprova!', 'danger')
-      
+    
+    return redirect(url_for('index'))
