@@ -83,9 +83,9 @@ def elimina_account(current_user_id):
         success = True
     except Exception as e:
         print(f'Errore: {e}')
-        connection.rollback()
+        connection.rollback() # in caso di errore es.(errore di connessione con il db o altro), devo annullare l'eliminazione e tornare allo stato iniziale
    
-    cursor.close()
-    connection.close()
+    cursor.close() # chiude il cursore sia se l'eliminazione vada a buon fine oppure no
+    connection.close() # chiude la connessione col db sia se l'eliminazione vada a buon fine oppure no
 
     return success
