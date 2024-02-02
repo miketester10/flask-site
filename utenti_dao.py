@@ -59,10 +59,14 @@ def get_user_by_email(email_del_login):
 
     return risultato
 
-def elimina_account(current_user_id):
+import sqlite3
 
-    query_utente = 'DELETE FROM utenti WHERE id = ?'
-    query_recensioni = 'DELETE FROM recensioni WHERE id_utente = ?'
+def elimina_account(current_user_id):
+    # Abilita il supporto delle chiavi esterne (senza di questo non vengono abilitate le FK e di conseguenza non riuscivo a sfruttare l'ON DELETE CASCADE settato sulle FK della tabella recensioni)
+    pragma_query = 'PRAGMA foreign_keys = ON'
+    
+    # Query per eliminare l'account
+    delete_query = 'DELETE FROM utenti WHERE id = ?'
 
     connection = sqlite3.connect('db/mangiato.db')
     cursor = connection.cursor()
@@ -70,15 +74,18 @@ def elimina_account(current_user_id):
     success = False
 
     try:
-        cursor.execute(query_utente, (current_user_id,))
-        cursor.execute(query_recensioni, (current_user_id,))
+        # Esegui l'istruzione PRAGMA foreign_keys = ON
+        cursor.execute(pragma_query)
+
+        # Esegui l'eliminazione dell'account
+        cursor.execute(delete_query, (current_user_id,))
         connection.commit()
         success = True
     except Exception as e:
-        print(f'Errore:{e}')
-        connection.rollback()  #in caso di errore es.(errore di connessione con il db o altro), devo annullare l'eliminazione e tornare allo stato iniziale
-    
-    cursor.close() # chiude il cursore sia se l'eliminazione vada a buon fine oppure no
-    connection.close() # chiude la connessione col db sia se l'eliminazione vada a buon fine oppure no  
-    
+        print(f'Errore: {e}')
+        connection.rollback()
+   
+    cursor.close()
+    connection.close()
+
     return success
