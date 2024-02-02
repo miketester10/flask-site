@@ -124,7 +124,7 @@ def elimina_recensione(recensione_id):
 # creo root /recensioni per pagina Le mie recensioni
 @app.route('/recensioni') # andrebbe chiamato /le_mie_recensioni per coerenza, ma l'ho modificata dopo la root, quindi non voglio cambiare tutti i riferimenti nei template
 def le_mie_recensioni():
-  recensioni_db = mangiato_dao.get_recensioni(current_user_id=current_user.id)
+  recensioni_db = mangiato_dao.get_recensioni(current_user.id)
   return render_template('recensioni.html', recensioni=recensioni_db)
 
 # creo root /iscriviti
@@ -229,6 +229,17 @@ def logout():
 @login_required
 def elimina_account():
     
+    recensioni = mangiato_dao.get_recensioni(current_user.id)
+
+    if recensioni:
+      for recensione in recensioni:
+        if recensione['file']:
+          if os.path.exists(os.path.join('static', recensione['file'])):
+            os.remove(os.path.join('static', recensione['file']))
+            print(f"Il file {(os.path.join('static', recensione['file']))} è stato eliminato.")
+          else:
+            print(f"Il file {(os.path.join('static', recensione['file']))} non esiste.") 
+
     success = utenti_dao.elimina_account(current_user.id)
 
     if success:

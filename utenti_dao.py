@@ -61,7 +61,8 @@ def get_user_by_email(email_del_login):
 
 def elimina_account(current_user_id):
 
-    query = 'DELETE FROM utenti WHERE id = ?'
+    query_utente = 'DELETE FROM utenti WHERE id = ?'
+    query_recensioni = 'DELETE FROM recensioni WHERE id_utente = ?'
 
     connection = sqlite3.connect('db/mangiato.db')
     cursor = connection.cursor()
@@ -69,7 +70,8 @@ def elimina_account(current_user_id):
     success = False
 
     try:
-        cursor.execute(query, (current_user_id,))
+        cursor.execute(query_utente, (current_user_id,))
+        cursor.execute(query_recensioni, (current_user_id,))
         connection.commit()
         success = True
     except Exception as e:
