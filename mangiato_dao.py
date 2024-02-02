@@ -43,7 +43,7 @@ def get_recensioni_by_id_piatto(id_piatto):
                 FROM recensioni
                 JOIN utenti ON recensioni.id_utente = utenti.id
                 WHERE recensioni.id_piatto = ?
-                ORDER BY recensioni.data ASC, recensioni.id DESC;
+                ORDER BY recensioni.id DESC
             '''
 
     connection = sqlite3.connect('db/mangiato.db')
@@ -62,7 +62,7 @@ def get_recensioni_by_id_piatto(id_piatto):
 # prendo tutte le recensioni senza filtrare per categoria di piatto
 def get_recensioni(current_user_id):
 
-    query = 'SELECT * FROM recensioni WHERE id_utente = ? ORDER BY data ASC, id DESC'
+    query = 'SELECT * FROM recensioni WHERE id_utente = ? ORDER BY id DESC'
     
     connection = sqlite3.connect('db/mangiato.db')
     connection.row_factory = sqlite3.Row

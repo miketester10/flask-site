@@ -124,7 +124,7 @@ def elimina_recensione(recensione_id):
 # creo root /recensioni per pagina Le mie recensioni
 @app.route('/recensioni') # andrebbe chiamato /le_mie_recensioni per coerenza, ma l'ho modificata dopo la root, quindi non voglio cambiare tutti i riferimenti nei template
 def le_mie_recensioni():
-  recensioni_db = mangiato_dao.get_recensioni(current_user_id=current_user.id)
+  recensioni_db = mangiato_dao.get_recensioni(current_user.id)
   return render_template('recensioni.html', recensioni=recensioni_db)
 
 # creo root /iscriviti
@@ -211,8 +211,7 @@ def load_user(user_id):
   try:
     user = User(db_user['id'], db_user['nome'], db_user['cognome'], db_user['username'], db_user['matricola'], db_user['email'], db_user['password'])
   except:
-    flash('Account eliminato definitivamente!', 'danger')
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
   
   return user 
 
@@ -223,4 +222,30 @@ def logout():
     logout_user()
     print('Logout effettuato') # questo messaggio lo stampa nel terminale per noi sviluppatori (lato server)
     flash('Logout effettuato, a presto!', 'success') # questo messaggio viene visualizzato sul browser (lato client, quindi frontend)
+    return redirect(url_for('index'))
+
+# creo root /elimina_account (e relative recensioni associate a quell'account)
+@app.route("/elimina_account")
+@login_required
+def elimina_account():
+    
+    recensioni = mangiato_dao.get_recensioni(current_user.id)
+
+    if recensioni:
+      for recensione in recensioni:
+        if recensione['file']:
+          if os.path.exists(os.path.join('static', recensione['file'])):
+            os.remove(os.path.join('static', recensione['file']))
+            print(f"Il file {(os.path.join('static', recensione['file']))} è stato eliminato.")
+          else:
+            print(f"Il file {(os.path.join('static', recensione['file']))} non esiste.") 
+
+    success = utenti_dao.elimina_account(current_user.id)
+
+    if success:
+        flash('Account eliminato correttamente!', 'success')
+        return redirect(url_for('index'))
+    else:
+        flash('Errore durante l\'eliminazione dell\'account. Riprova!', 'danger')
+    
     return redirect(url_for('index'))

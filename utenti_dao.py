@@ -58,3 +58,27 @@ def get_user_by_email(email_del_login):
     connection.close()
 
     return risultato
+
+def elimina_account(current_user_id):
+
+    query_utente = 'DELETE FROM utenti WHERE id = ?'
+    query_recensioni = 'DELETE FROM recensioni WHERE id_utente = ?'
+
+    connection = sqlite3.connect('db/mangiato.db')
+    cursor = connection.cursor()
+
+    success = False
+
+    try:
+        cursor.execute(query_utente, (current_user_id,))
+        cursor.execute(query_recensioni, (current_user_id,))
+        connection.commit()
+        success = True
+    except Exception as e:
+        print(f'Errore:{e}')
+        connection.rollback()  #in caso di errore es.(errore di connessione con il db o altro), devo annullare l'eliminazione e tornare allo stato iniziale
+    
+    cursor.close() # chiude il cursore sia se l'eliminazione vada a buon fine oppure no
+    connection.close() # chiude la connessione col db sia se l'eliminazione vada a buon fine oppure no  
+    
+    return success

@@ -35,8 +35,9 @@
             <li class="nav-item {% if request.path == url_for('le_mie_recensioni') %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('le_mie_recensioni') }}">Le mie recensioni</a>
             </li>
-            {% endif %}
-            {% if current_user.is_authenticated %}
+            <li class="nav-item {% if request.path == url_for('elimina_account') %}active{% endif %}">
+            <a class="nav-link" href="{{ url_for('elimina_account') }}">Elimina account</a>
+            </li>
             <li class="nav-item {% if request.path == url_for('logout') %}active{% endif %}">
             <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
             </li>
